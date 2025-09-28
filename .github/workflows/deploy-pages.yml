@@ -31,7 +31,7 @@ jobs:
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/hello-world-app
+          path: dist/hello-world-app/browser
 
   deploy:
     needs: build
