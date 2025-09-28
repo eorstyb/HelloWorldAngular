@@ -3,7 +3,7 @@ name: Build and deploy to GitHub Pages
 on:
   push:
     branches:
-      - main    # déclenche sur merge/push vers main
+      - main
 
 permissions:
   contents: read
@@ -13,30 +13,23 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      dist-path: ${{ steps.set-dist.outputs.dist }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build (production)
-        # IMPORTANT: remplace <DIST_FOLDER> et <BASE_HREF> correctement (explications plus bas)
+      - name: Build Angular app
         run: npm run build -- --configuration production --base-href /HelloWorldAngular/
 
-      - name: Set dist path
-        id: set-dist
-        run: echo "::set-output name=dist::dist/hello-world-app"
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist/hello-world-app
 
@@ -46,4 +39,3 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-
