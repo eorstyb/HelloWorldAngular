@@ -29,16 +29,16 @@ jobs:
 
       - name: Build (production)
         # IMPORTANT: remplace <DIST_FOLDER> et <BASE_HREF> correctement (explications plus bas)
-        run: npm run build -- --configuration production --base-href /<REPO>/
+        run: npm run build -- --configuration production --base-href /HelloWorldAngular/
 
       - name: Set dist path
         id: set-dist
-        run: echo "::set-output name=dist::dist/<DIST_FOLDER>"
+        run: echo "::set-output name=dist::dist/hello-world-app"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: dist/<DIST_FOLDER>
+          path: dist/hello-world-app
 
   deploy:
     needs: build
