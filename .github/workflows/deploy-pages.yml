@@ -1,0 +1,49 @@
+name: Build and deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main    # déclenche sur merge/push vers main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      dist-path: ${{ steps.set-dist.outputs.dist }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (production)
+        # IMPORTANT: remplace <DIST_FOLDER> et <BASE_HREF> correctement (explications plus bas)
+        run: npm run build -- --configuration production --base-href /<REPO>/
+
+      - name: Set dist path
+        id: set-dist
+        run: echo "::set-output name=dist::dist/<DIST_FOLDER>"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: dist/<DIST_FOLDER>
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
+
